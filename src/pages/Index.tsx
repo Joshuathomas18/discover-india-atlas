@@ -40,16 +40,21 @@ const Index = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-              Explore India
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent drop-shadow-sm">
+              Incredible India
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="h-1 w-16 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+              <span className="text-lg md:text-xl text-primary font-semibold">🕉️ अतुल्य भारत 🕉️</span>
+              <div className="h-1 w-16 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+            </div>
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-medium">
               One Click, One Culture, One Story at a Time
             </p>
           </motion.div>
 
           {/* Map Container */}
-          <div className="relative h-[600px] mb-20">
+          <div className="relative h-[700px] mb-20">
             <IndiaMap onStateClick={handleStateClick} />
             
             {/* Info Cards - Appear after state selection */}
@@ -59,18 +64,26 @@ const Index = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none bg-black/20 backdrop-blur-sm"
                 >
                   <div className="relative pointer-events-auto">
-                    {/* Center State Name */}
+                    {/* Center State Name with Cultural Design */}
                     <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", duration: 0.8 }}
                       className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-10"
                     >
-                      <div className="bg-card/95 backdrop-blur-sm px-8 py-4 rounded-2xl shadow-2xl border-2 border-primary">
-                        <h2 className="text-3xl font-bold text-primary">{selectedState}</h2>
-                        <p className="text-sm text-muted-foreground">Rajasthan</p>
+                      <div className="bg-gradient-to-br from-primary to-accent/80 backdrop-blur-md px-10 py-6 rounded-3xl shadow-2xl border-4 border-accent relative overflow-hidden">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_70%)]"></div>
+                        <div className="relative">
+                          <h2 className="text-4xl font-bold text-white drop-shadow-lg">{selectedState}</h2>
+                          <div className="flex items-center justify-center gap-2 mt-2">
+                            <div className="h-0.5 w-8 bg-white/60"></div>
+                            <p className="text-sm text-white/90 font-medium">Rajasthan - The Land of Kings</p>
+                            <div className="h-0.5 w-8 bg-white/60"></div>
+                          </div>
+                        </div>
                       </div>
                     </motion.div>
 

@@ -8,38 +8,38 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Warm parchment and earth tones - Incredible India palette */
-    --background: 35 35% 95%;
-    --foreground: 25 35% 15%;
+    /* Rich Indian cultural palette - saffron, turmeric, terracotta */
+    --background: 38 45% 96%;
+    --foreground: 20 40% 12%;
 
-    --card: 35 40% 98%;
-    --card-foreground: 25 35% 15%;
+    --card: 35 50% 98%;
+    --card-foreground: 20 40% 12%;
 
-    --popover: 35 40% 98%;
-    --popover-foreground: 25 35% 15%;
+    --popover: 35 50% 98%;
+    --popover-foreground: 20 40% 12%;
 
-    /* Rich terracotta and deep brown */
-    --primary: 15 65% 45%;
-    --primary-foreground: 35 40% 98%;
+    /* Deep saffron orange - Indian cultural primary */
+    --primary: 18 85% 50%;
+    --primary-foreground: 35 50% 98%;
 
-    /* Muted gold accent */
-    --secondary: 40 45% 75%;
-    --secondary-foreground: 25 45% 20%;
+    /* Warm turmeric yellow */
+    --secondary: 45 90% 65%;
+    --secondary-foreground: 20 45% 15%;
 
-    /* Warm muted tones */
-    --muted: 35 25% 88%;
-    --muted-foreground: 25 20% 45%;
+    /* Soft sandalwood tones */
+    --muted: 38 30% 90%;
+    --muted-foreground: 25 25% 42%;
 
-    /* Gold highlights */
-    --accent: 45 75% 55%;
-    --accent-foreground: 25 45% 15%;
+    /* Rich golden accent */
+    --accent: 43 95% 58%;
+    --accent-foreground: 20 45% 10%;
 
     --destructive: 0 70% 50%;
-    --destructive-foreground: 35 40% 98%;
+    --destructive-foreground: 35 50% 98%;
 
-    --border: 35 20% 85%;
-    --input: 35 20% 90%;
-    --ring: 15 65% 45%;
+    --border: 38 25% 88%;
+    --input: 38 25% 92%;
+    --ring: 18 85% 50%;
 
     --radius: 1rem;
 
@@ -120,9 +120,25 @@ All colors MUST be HSL.
 
   .parchment-texture {
     background-image: 
-      linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-    background-size: 20px 20px;
+      linear-gradient(rgba(255, 138, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 138, 0, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  .mandala-border {
+    border-image: repeating-linear-gradient(
+      45deg,
+      hsl(var(--primary)),
+      hsl(var(--primary)) 10px,
+      hsl(var(--accent)) 10px,
+      hsl(var(--accent)) 20px
+    ) 1;
+  }
+
+  .indian-pattern {
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(255, 138, 0, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 50%, rgba(255, 200, 0, 0.08) 0%, transparent 50%);
   }
 }
 

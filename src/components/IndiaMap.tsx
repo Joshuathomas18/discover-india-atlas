@@ -58,21 +58,28 @@ const IndiaMap = ({ onStateClick }: IndiaMapProps) => {
 
       // Add click handler
       marker.on('click', () => {
-        if (!map.current) return;
+        if (!map.current || !mapContainer.current) return;
         
-        // Zoom to the location - special handling for Jaipur
+        // Get the map container dimensions to calculate center
+        const mapHeight = mapContainer.current.offsetHeight;
+        const mapWidth = mapContainer.current.offsetWidth;
+        
+        // Zoom to the location and center it perfectly
         if (state.name.includes('Jaipur')) {
-          map.current.flyTo(state.coords, 12, {
-            duration: 2,
+          // Center the marker in the viewport
+          map.current.flyTo(state.coords, 13, {
+            duration: 1.8,
+            easeLinearity: 0.25,
           });
           
-          // Trigger state click after zoom animation
+          // Trigger state click after zoom animation completes
           setTimeout(() => {
             onStateClick('Jaipur');
-          }, 2000);
+          }, 1900);
         } else {
-          map.current.flyTo(state.coords, 10, {
+          map.current.flyTo(state.coords, 11, {
             duration: 1.5,
+            easeLinearity: 0.25,
           });
         }
       });
