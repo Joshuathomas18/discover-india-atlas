@@ -40,9 +40,6 @@ const InfoCard = ({ category, index, onClick }: InfoCardProps) => {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/40 to-transparent" />
-          <div className="absolute top-2 right-2 w-8 h-8 bg-accent/80 rounded-full flex items-center justify-center">
-            <span className="text-xs font-bold text-accent-foreground">{index + 1}</span>
-          </div>
         </div>
         <CardContent className="p-4 bg-gradient-to-b from-card to-secondary/10">
           <h3 className="font-bold text-lg mb-1 line-clamp-2 text-primary">{category.title}</h3>
