@@ -125,3 +125,14 @@ All colors MUST be HSL.
     background-size: 20px 20px;
   }
 }
+
+/* Leaflet custom marker styles */
+.custom-marker {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+}
+
+.leaflet-container {
+  font-family: inherit;
+}
