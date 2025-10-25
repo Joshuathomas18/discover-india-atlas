@@ -414,9 +414,9 @@ export const karnatakaData = {
       details: 'Tipu Sultan, also known as the Tiger of Mysore, was a historic ruler who fought against British colonial rule in the 18th century. He was known for his military prowess, administrative skills, and resistance to foreign domination. Tipu Sultan\'s Summer Palace in Bangalore is a beautiful example of Indo-Islamic architecture. He introduced several administrative reforms and promoted trade and commerce. Tipu Sultan remains a controversial but significant figure in Karnataka\'s history.',
       actions: {
         primary: {
-          label: 'Tipu Sultan Palace',
+          label: 'Buy Tickets',
           type: 'external_link',
-          url: 'https://www.karnatakatourism.org/attractions/tipu-sultan-palace'
+          url: 'https://asi.payumoney.com/quick/tip'
         },
         secondary: {
           label: 'Historical Tour',

@@ -117,7 +117,7 @@ export const bengaluruData: KarnatakaPOI = {
           primary: {
             label: 'Buy Tickets',
             type: 'external_link',
-            url: 'https://asi.nic.in/tickets'
+            url: 'https://asi.payumoney.com/quick/tip'
           },
           secondary: {
             label: 'Audio Guide',
