@@ -1,9 +1,14 @@
 import { motion } from "framer-motion";
-import { CulturalCategory } from "@/data/jaipurData";
 import { Card, CardContent } from "./ui/card";
+import { CulturalItem } from "@/types/database";
 
 interface InfoCardProps {
-  category: CulturalCategory;
+  category: {
+    key: string;
+    name: string;
+    description: string;
+    items: CulturalItem[];
+  };
   index: number;
   onClick: () => void;
 }
@@ -13,6 +18,27 @@ const InfoCard = ({ category, index, onClick }: InfoCardProps) => {
   const angle = (index * 72 * Math.PI) / 180;
   const x = Math.cos(angle) * radius;
   const y = Math.sin(angle) * radius;
+
+  // Since cultural items don't have images in the database, use category-specific images
+  // with better fallback logic
+  const getCategoryImage = (categoryKey: string) => {
+    const imageMap: Record<string, string> = {
+      monuments: '/src/assets/monuments.jpg',
+      food: '/src/assets/food.jpg', 
+      customs: '/src/assets/customs.jpg',
+      festivals: '/src/assets/festivals.jpg',
+      history: '/src/assets/history.jpg'
+    };
+    return imageMap[categoryKey] || '/src/assets/monuments.jpg';
+  };
+
+  const categoryImage = getCategoryImage(category.key);
+
+  // Get category display name
+  const categoryName = category.name || category.key.charAt(0).toUpperCase() + category.key.slice(1);
+  
+  // Get category description from first item
+  const categoryDescription = category.items[0]?.description || `Explore ${categoryName.toLowerCase()} in this place`;
 
   return (
     <motion.div
@@ -35,17 +61,20 @@ const InfoCard = ({ category, index, onClick }: InfoCardProps) => {
       <Card className="w-52 overflow-hidden shadow-2xl hover:shadow-[0_20px_50px_rgba(255,138,0,0.3)] transition-all duration-300 border-4 border-primary/30 bg-gradient-to-br from-card to-card/80 indian-pattern">
         <div className="relative h-36 overflow-hidden">
           <img
-            src={category.image}
-            alt={category.title}
+            src={categoryImage}
+            alt={categoryName}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/40 to-transparent" />
         </div>
         <CardContent className="p-4 bg-gradient-to-b from-card to-secondary/10">
-          <h3 className="font-bold text-lg mb-1 line-clamp-2 text-primary">{category.title}</h3>
+          <h3 className="font-bold text-lg mb-1 line-clamp-2 text-primary">{categoryName}</h3>
           <p className="text-xs text-muted-foreground line-clamp-2">
-            {category.description}
+            {categoryDescription}
           </p>
+          <div className="text-xs text-accent mt-1">
+            {category.items.length} item{category.items.length !== 1 ? 's' : ''}
+          </div>
         </CardContent>
       </Card>
     </motion.div>

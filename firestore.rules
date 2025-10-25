@@ -1,0 +1,29 @@
+// Firestore Security Rules for India Cultural Atlas
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // States collection - public read access
+    match /states/{stateId} {
+      allow read: if true; // Public read access
+      allow write: if false; // No public write access (admin only)
+    }
+    
+    // Places collection - public read access
+    match /places/{placeId} {
+      allow read: if true; // Public read access
+      allow write: if false; // No public write access (admin only)
+    }
+    
+    // Cultural items collection - public read access
+    match /cultural_items/{itemId} {
+      allow read: if true; // Public read access
+      allow write: if false; // No public write access (admin only)
+    }
+    
+    // Admin collection for managing content
+    match /admin/{adminId} {
+      allow read, write: if false; // Admin only access
+    }
+  }
+}

@@ -4,7 +4,7 @@ import { MessageCircle, X, Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Card } from "./ui/card";
-import { chatbotResponses } from "@/data/jaipurData";
+import chatbotData from "@/data/chatbot_rajasthan.json";
 
 interface Message {
   text: string;
@@ -14,20 +14,23 @@ interface Message {
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { text: "Namaste! 🙏 I'm here to help you explore India's rich culture. Ask me anything about Jaipur!", isBot: true }
+    { text: chatbotData.rajasthan.greeting, isBot: true }
   ]);
   const [input, setInput] = useState("");
 
   const getResponse = (userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase();
     
-    for (const [key, response] of Object.entries(chatbotResponses)) {
-      if (lowerMessage.includes(key)) {
-        return response;
+    // Check for keyword matches
+    for (const [category, keywords] of Object.entries(chatbotData.rajasthan.keywords)) {
+      for (const keyword of keywords) {
+        if (lowerMessage.includes(keyword)) {
+          return chatbotData.rajasthan.responses[category as keyof typeof chatbotData.rajasthan.responses] || chatbotData.rajasthan.responses.default;
+        }
       }
     }
     
-    return chatbotResponses.default;
+    return chatbotData.rajasthan.responses.default;
   };
 
   const handleSend = () => {
@@ -73,8 +76,8 @@ const Chatbot = () => {
             <Card className="shadow-2xl border-2 border-primary/20 overflow-hidden">
               {/* Header */}
               <div className="bg-primary text-primary-foreground p-4">
-                <h3 className="font-bold text-lg">Ask Incredible India</h3>
-                <p className="text-sm opacity-90">Your cultural guide</p>
+                <h3 className="font-bold text-lg">Ask Rajasthan Guide</h3>
+                <p className="text-sm opacity-90">Your cultural companion</p>
               </div>
 
               {/* Messages */}
@@ -104,7 +107,7 @@ const Chatbot = () => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                    placeholder="Ask about culture, food, monuments..."
+                    placeholder="Ask about monuments, food, customs, festivals..."
                     className="flex-1"
                   />
                   <Button size="icon" onClick={handleSend}>
