@@ -262,6 +262,12 @@ const Index = () => {
     }
   };
 
+  // Handle Add Your Website click
+  const handleAddWebsite = () => {
+    // For now, show an alert. In the future, this could open a form or modal
+    alert('Add Your Website feature coming soon! Share your location to be featured on the map.');
+  };
+
   return (
     <div className="min-h-screen bg-background parchment-texture">
       <Navbar />
@@ -288,12 +294,28 @@ const Index = () => {
             </p>
           </motion.div>
 
-          {/* Search Bar - positioned above the map */}
-          <div className="mb-6 flex justify-start">
+          {/* Search Bar and Add Website - positioned above the map */}
+          <div className="mb-6 flex justify-between items-center">
             <SearchBar 
               onLocationSelect={handleSearchResult}
               mapPhase={mapPhase}
             />
+            
+            {/* Add Your Website Box - positioned above the map */}
+            <div 
+              onClick={handleAddWebsite}
+              className="bg-gradient-to-br from-primary to-accent/80 backdrop-blur-md px-6 py-4 rounded-xl shadow-xl border border-primary/20 hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span className="text-white text-lg">+</span>
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold text-sm">Add Your Website</h3>
+                  <p className="text-white/80 text-xs">Share your location</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Map Container */}
