@@ -1,4 +1,3 @@
-import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
@@ -105,15 +104,10 @@ const StateModal = ({ isOpen, onClose, category, place }: StateModalProps) => {
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
         {/* Header */}
         <DialogHeader className="p-6 pb-4">
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-3xl flex items-center gap-3">
-              <span className="text-2xl">🏛️</span>
-              {category.key.charAt(0).toUpperCase() + category.key.slice(1)} in {place.name}
-            </DialogTitle>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          <DialogTitle className="text-3xl flex items-center gap-3">
+            <span className="text-2xl">🏛️</span>
+            {category.key.charAt(0).toUpperCase() + category.key.slice(1)} in {place.name}
+          </DialogTitle>
         </DialogHeader>
 
         <motion.div

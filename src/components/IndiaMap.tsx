@@ -149,12 +149,22 @@ const IndiaMap = ({ onStateClick, onPlaceClick, onPOIClick, onBackToMap, mapPhas
 
   // Handle state selection and zoom
   useEffect(() => {
-    if (!mapRef.current || !selectedState) return;
+    if (!mapRef.current) return;
 
-    const stateConfig = getStateConfig(selectedState);
-    if (!stateConfig) return;
-
-    if (mapPhase === 'stateZoomed') {
+    if (mapPhase === 'initial') {
+      // Reset to India view with smooth animation
+      mapRef.current.panTo({ lat: 22.5937, lng: 78.9629 });
+      mapRef.current.setZoom(5);
+      createStateClickableAreas();
+      
+      // Clear all POI markers when going back to initial view
+      poiMarkersRef.current.forEach(marker => marker.setMap(null));
+      poiMarkersRef.current = [];
+      setPOIs([]);
+    } else if (mapPhase === 'stateZoomed' && selectedState) {
+      const stateConfig = getStateConfig(selectedState);
+      if (!stateConfig) return;
+      
       // Zoom to state
       mapRef.current.panTo(stateConfig.center);
       mapRef.current.setZoom(stateConfig.zoom);
@@ -163,11 +173,6 @@ const IndiaMap = ({ onStateClick, onPlaceClick, onPOIClick, onBackToMap, mapPhas
       setTimeout(() => {
         loadPOIsForState(selectedState);
       }, 1000);
-    } else if (mapPhase === 'initial') {
-      // Reset to India view
-      mapRef.current.panTo({ lat: 22.5937, lng: 78.9629 });
-      mapRef.current.setZoom(5);
-      createStateClickableAreas();
     }
   }, [mapPhase, selectedState]);
 
@@ -366,7 +371,9 @@ const IndiaMap = ({ onStateClick, onPlaceClick, onPOIClick, onBackToMap, mapPhas
   return (
     <div className="relative w-full h-full">
       <div ref={mapContainer} className="absolute inset-0 rounded-2xl shadow-2xl overflow-hidden z-0" />
-      <div className="absolute top-4 left-4 bg-card/90 backdrop-blur-sm px-6 py-3 rounded-xl shadow-lg border border-border z-10">
+      
+      {/* Status indicator - positioned in top-right corner */}
+      <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-sm px-6 py-3 rounded-xl shadow-lg border border-border z-10">
         {mapPhase === 'initial' && (
           <p className="text-sm font-medium text-muted-foreground">
             Hover over states to see clickable areas
@@ -377,25 +384,27 @@ const IndiaMap = ({ onStateClick, onPlaceClick, onPOIClick, onBackToMap, mapPhas
             Loading geographical features...
           </p>
         )}
-        {mapPhase === 'placesShown' && pois.length > 0 && (
+        {mapPhase === 'stateZoomed' && pois.length > 0 && (
           <p className="text-sm font-medium text-muted-foreground">
             Click on a POI marker to learn more
           </p>
         )}
-        {mapPhase === 'placesShown' && pois.length === 0 && (
+        {mapPhase === 'stateZoomed' && pois.length === 0 && (
           <p className="text-sm font-medium text-muted-foreground">
             No geographical features available for this state yet
           </p>
         )}
-        {(mapPhase === 'stateZoomed' || mapPhase === 'poiSelected') && onBackToMap && (
-          <button
-            onClick={onBackToMap}
-            className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-primary/20 hover:bg-white hover:shadow-xl transition-all duration-200 text-sm font-medium text-primary hover:text-accent"
-          >
-            ← {mapPhase === 'stateZoomed' ? 'Go Back to India Map' : 'Go Back to State View'}
-          </button>
-        )}
       </div>
+
+      {/* Back button - positioned in top-left corner when needed */}
+      {(mapPhase === 'stateZoomed' || mapPhase === 'poiSelected') && onBackToMap && (
+        <button
+          onClick={onBackToMap}
+          className="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-primary/20 hover:bg-white hover:shadow-xl transition-all duration-200 text-sm font-medium text-primary hover:text-accent"
+        >
+          ← {mapPhase === 'stateZoomed' ? 'Go Back to India Map' : 'Go Back to State View'}
+        </button>
+      )}
     </div>
   );
 };
