@@ -94,6 +94,19 @@ export class MapDataService {
     console.log(`Using local Karnataka data for POI: ${poiId}`);
     return allKarnatakaData.find(poi => poi.id === poiId) || null;
   }
+
+  // Get geographical POIs by state (for search functionality)
+  async getGeographicalPOIsByState(stateId: string): Promise<any[]> {
+    try {
+      console.log(`Fetching geographical POIs for state: ${stateId}`);
+      const pois = await databaseService.getGeographicalPOIsByState(stateId);
+      console.log(`Found ${pois.length} geographical POIs for ${stateId}`);
+      return pois;
+    } catch (error) {
+      console.error(`Error fetching geographical POIs for state ${stateId}:`, error);
+      return [];
+    }
+  }
 }
 
 // Export singleton instance

@@ -6,6 +6,7 @@ import InfoCard from "@/components/InfoCard";
 import StateModal from "@/components/StateModal";
 import MapLegend from "@/components/MapLegend";
 import POIModal from "@/components/POIModal";
+import SearchBar from "@/components/SearchBar";
 import Chatbot from "@/components/Chatbot";
 import Footer from "@/components/Footer";
 import { getStateConfig } from "@/config/statesConfig";
@@ -234,6 +235,33 @@ const Index = () => {
     setSelectedCategory(null);
   };
 
+  // Handle search result selection
+  const handleSearchResult = (result: any) => {
+    if (result.type === 'state') {
+      // Navigate to state
+      handleStateClick(result.id);
+    } else if (result.type === 'poi') {
+      // Create a GeographicalPOI object from search result
+      const poi: GeographicalPOI = {
+        id: result.id,
+        state_id: result.state.toLowerCase().replace(' ', '-'),
+        name: result.name,
+        category: result.category || 'place',
+        description: result.description || '',
+        coordinates: result.coordinates,
+        created_at: new Date()
+      };
+      
+      // First navigate to the state, then select the POI
+      handleStateClick(result.state.toLowerCase().replace(' ', '-'));
+      
+      // Wait a bit for state to load, then select POI
+      setTimeout(() => {
+        handlePOIClick(poi);
+      }, 1500);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background parchment-texture">
       <Navbar />
@@ -259,6 +287,14 @@ const Index = () => {
                   Click on any state to discover its geographical treasures
             </p>
           </motion.div>
+
+          {/* Search Bar - positioned above the map */}
+          <div className="mb-6 flex justify-start">
+            <SearchBar 
+              onLocationSelect={handleSearchResult}
+              mapPhase={mapPhase}
+            />
+          </div>
 
           {/* Map Container */}
           <div className="relative h-[700px] mb-20">
