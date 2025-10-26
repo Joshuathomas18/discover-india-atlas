@@ -11,7 +11,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <h1 className="text-2xl md:text-3xl font-bold text-primary">
-              Incredible India
+              Anubhooti
             </h1>
           </div>
 

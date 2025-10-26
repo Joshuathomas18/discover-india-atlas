@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Place, CulturalItem } from "@/types/database";
 import { useState } from "react";
+import { formatTabName } from "@/utils/formatTabName";
 
 // Import images
 import monumentsImg from "@/assets/monuments.jpg";
@@ -11,15 +12,23 @@ import foodImg from "@/assets/food.jpg";
 import customsImg from "@/assets/customs.jpg";
 import festivalsImg from "@/assets/festivals.jpg";
 import historyImg from "@/assets/history.jpg";
+import factsImg from "@/assets/facts.jpg";
+import howToReachImg from "@/assets/how_to_reach.jpg";
+import riversAssociatedImg from "@/assets/rivers_associated.jpg";
+import trekkingImg from "@/assets/trekking.jpg";
+import visitingImg from "@/assets/visiting.jpg";
+import fishesFoundImg from "@/assets/fishes_found.jpg";
+import animalsFoundImg from "@/assets/animals_found.jpg";
 
 interface StateModalProps {
   isOpen: boolean;
   onClose: () => void;
   category: any;
   place: Place | null;
+  onStreetViewOpen?: (monumentId: string) => void;
 }
 
-const StateModal = ({ isOpen, onClose, category, place }: StateModalProps) => {
+const StateModal = ({ isOpen, onClose, category, place, onStreetViewOpen }: StateModalProps) => {
   if (!category || !place) return null;
 
   const [showActions, setShowActions] = useState(false);
@@ -29,11 +38,23 @@ const StateModal = ({ isOpen, onClose, category, place }: StateModalProps) => {
 
   // Image mapping
   const imageMap: Record<string, string> = {
+    // Cities tabs
     monuments: monumentsImg,
     food: foodImg,
     customs: customsImg,
     festivals: festivalsImg,
-    history: historyImg
+    history: historyImg,
+    
+    // Waterfalls, Dams, Mountains, Rivers, Forests, Wildlife tabs
+    facts: factsImg,
+    facts_tourists: factsImg,
+    how_to_reach: howToReachImg,
+    rivers_associated: riversAssociatedImg,
+    trekking: trekkingImg,
+    visiting: visitingImg,
+    fishes_found: fishesFoundImg,
+    animals_found: animalsFoundImg,
+    tourists: factsImg // Use facts image for tourists tab
   };
 
   const handleActionClick = (action: any) => {
@@ -80,11 +101,44 @@ const StateModal = ({ isOpen, onClose, category, place }: StateModalProps) => {
         }
         break;
 
+      case 'virtual_tour':
+        // Handle Virtual Tour - open Street View
+        if (onStreetViewOpen && action.monumentId) {
+          onStreetViewOpen(action.monumentId);
+          toast({
+            title: "Opening Virtual Tour",
+            description: "Loading 3D Street View... Please avoid rapid navigation to prevent rate limiting.",
+            duration: 4000,
+          });
+        } else {
+          toast({
+            title: "Virtual Tour",
+            description: "3D Street View not available for this location",
+          });
+        }
+        break;
+
       default:
-        toast({
-          title: "Action",
-          description: action.label,
-        });
+        // Check if it's a Virtual Tour by label
+        if (action.label && action.label.toLowerCase().includes('virtual tour')) {
+          if (onStreetViewOpen && action.monumentId) {
+            onStreetViewOpen(action.monumentId);
+            toast({
+              title: "Opening Virtual Tour",
+              description: "Loading 3D Street View...",
+            });
+          } else {
+            toast({
+              title: "Virtual Tour",
+              description: "3D Street View not available for this location",
+            });
+          }
+        } else {
+          toast({
+            title: "Action",
+            description: action.label,
+          });
+        }
     }
   };
 
@@ -106,7 +160,7 @@ const StateModal = ({ isOpen, onClose, category, place }: StateModalProps) => {
         <DialogHeader className="p-6 pb-4">
           <DialogTitle className="text-3xl flex items-center gap-3">
             <span className="text-2xl">🏛️</span>
-            {category.key.charAt(0).toUpperCase() + category.key.slice(1)} in {place.name}
+            {formatTabName(category.key)} in {place.name}
           </DialogTitle>
         </DialogHeader>
 

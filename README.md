@@ -1,73 +1,128 @@
-# Welcome to your Lovable project
+# Anubhooti
 
-## Project info
+**The Living Map of India** - A comprehensive interactive cultural atlas for exploring India's diverse geography, heritage, and culture.
 
-**URL**: https://lovable.dev/projects/f03d7b52-e4da-4923-8ee5-7444737ecb51
+## Overview
 
-## How can I edit this code?
+Anubhooti is an innovative web application that provides a unified, intuitive platform for discovering India's rich cultural and geographical diversity. Instead of navigating through multiple state tourism websites, users can explore all 36 states and union territories through an interactive map interface.
 
-There are several ways of editing your application.
+## Key Features
 
-**Use Lovable**
+### Interactive Map Interface
+- Single-click discovery across all states and union territories
+- Zoom into states to reveal geographical points of interest
+- View cities, monuments, rivers, waterfalls, mountains, wildlife sanctuaries, forests, and dams
+- Smooth transitions and intuitive navigation
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f03d7b52-e4da-4923-8ee5-7444737ecb51) and start prompting.
+### Category-Based Information System
+- Cities: Discover monuments, food, customs, festivals, and history
+- Mountains: Access facts, trekking information, and directions
+- Waterfalls: Learn about associated rivers, facts, and visiting information
+- Wildlife Sanctuaries: Explore facts, visiting details, and wildlife information
+- Rivers: Understand facts, fish species, and access information
+- Forests: Learn facts, visiting information, and wildlife details
+- Dams: Find associated rivers, facts, and tourist information
 
-Changes made via Lovable will be committed automatically to this repo.
+### Smart Search with AI
+- Natural language search powered by Google Gemini AI
+- Handles queries for places not in the database
+- Provides structured information from AI-powered web searches
+- Always available search option for any query
 
-**Use your preferred IDE**
+### AI-Powered Trip Planner
+- Conversational interface for personalized trip planning
+- Asks about place preferences, region, terrain type, activity interests, duration, and budget
+- Generates detailed itineraries with destinations, budgets, meals, and accommodation
+- Provides actionable links to book and explore
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 3D Virtual Exploration
+- Google Street View integration for monuments
+- Immersive 3D experiences with smooth navigation
+- Rate limiting protection for optimal performance
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Actionable Content
+- Real links to official websites and booking platforms
+- Direct access to buy tickets, virtual tours, and map views
+- Integration with Google Maps for navigation
 
-Follow these steps:
+## Technology Stack
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- **Frontend**: React, TypeScript, Tailwind CSS, Framer Motion
+- **Mapping**: Google Maps JavaScript API
+- **AI**: Google Gemini API
+- **Search**: Meilisearch
+- **Vector Database**: ChromaDB for RAG (Retrieval-Augmented Generation)
+- **Data Storage**: Firestore-like structure
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Setup
 
-# Step 3: Install the necessary dependencies.
-npm i
+See [SETUP.md](SETUP.md) for detailed installation and configuration instructions.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## Project Structure
+
+```
+discover-india-atlas/
+├── src/
+│   ├── components/      # React components
+│   ├── pages/           # Page components
+│   ├── services/        # API services and business logic
+│   ├── data/            # State-specific data files
+│   ├── config/          # Configuration files
+│   └── utils/           # Utility functions
+├── public/              # Static assets
+├── scripts/             # Utility scripts
+└── docker-compose.yml   # Docker configuration for services
+```
+
+## Data Coverage
+
+- 36 states and union territories
+- 300+ points of interest
+- Categories: Cities, Rivers, Mountains, Wildlife Sanctuaries, Forests, Waterfalls, Dams
+- Comprehensive cultural information for each location
+
+## Features in Detail
+
+### Map Navigation
+1. Click on any state to zoom in
+2. View geographical points of interest
+3. Click on a POI to see category tabs
+4. Explore rich cultural information
+
+### Search Functionality
+- Traditional search through Meilisearch for known locations
+- AI-powered search for unique or new locations
+- Intelligent handling of zero-result searches
+
+### Trip Planning
+- Interactive conversation flow
+- Multiple preference options
+- Detailed itinerary generation
+- Budget and accommodation recommendations
+
+## API Keys Required
+
+- Google Maps API
+- Google Gemini API
+- Meilisearch (included via Docker)
+
+## Development
+
+Install dependencies:
+```bash
+npm install
+```
+
+Start development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Build for production:
+```bash
+npm run build
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## License
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/f03d7b52-e4da-4923-8ee5-7444737ecb51) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is part of a hackathon submission.

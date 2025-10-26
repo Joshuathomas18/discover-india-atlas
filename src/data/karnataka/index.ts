@@ -3,7 +3,7 @@
 
 import { KarnatakaPOI } from '../../types/database';
 import bengaluruData, { mysoreData, mangaloreData } from './placesData';
-import additionalCitiesData from './additionalCities';
+import karnatakaMajorCitiesData from './majorCities';
 import karnatakaRiversData from './riversData';
 import karnatakaMountainsData from './mountainsData';
 import karnatakaWildlifeData from './wildlifeData';
@@ -17,7 +17,7 @@ export const allKarnatakaData: KarnatakaPOI[] = [
   bengaluruData,
   mysoreData,
   mangaloreData,
-  ...additionalCitiesData,
+  ...karnatakaMajorCitiesData,
   
   // Rivers
   ...karnatakaRiversData,
@@ -43,6 +43,7 @@ export {
   bengaluruData,
   mysoreData,
   mangaloreData,
+  karnatakaMajorCitiesData,
   karnatakaRiversData,
   karnatakaMountainsData,
   karnatakaWildlifeData,

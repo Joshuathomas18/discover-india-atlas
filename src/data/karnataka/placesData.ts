@@ -48,7 +48,8 @@ export const bengaluruData: KarnatakaPOI = {
           },
           secondary: {
             label: 'Virtual Tour',
-            type: 'modal',
+            type: 'virtual_tour',
+            monumentId: 'bangalore_palace',
             content: 'Take a virtual tour of Bangalore Palace'
           }
         },

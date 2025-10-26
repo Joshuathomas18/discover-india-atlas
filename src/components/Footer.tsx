@@ -4,7 +4,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div>
-            <h3 className="text-xl font-bold text-primary">Incredible India</h3>
+            <h3 className="text-xl font-bold text-primary">Anubhooti</h3>
             <p className="text-sm text-muted-foreground mt-1">
               Explore India's Rich Cultural Heritage
             </p>
@@ -22,7 +22,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-6 text-center text-xs text-muted-foreground">
-          <p>© 2025 Incredible India. Celebrating Unity in Diversity.</p>
+          <p>© 2025 Anubhooti. Celebrating Unity in Diversity.</p>
         </div>
       </div>
     </footer>

@@ -1,0 +1,218 @@
+[
+  {
+    "state": "andaman_nicobar",
+    "url": "https://www.andamantourism.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "andhra_pradesh",
+    "url": "https://tourism.ap.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "arunachal_pradesh",
+    "url": "http://www.arunachaltourism.com/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "assam",
+    "url": "https://tourism.assam.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "bihar",
+    "url": "http://www.bihartourism.gov.in",
+    "status": "not_working",
+    "error": "ECONNABORTED"
+  },
+  {
+    "state": "chandigarh",
+    "url": "http://chandigarhtourism.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "chhattisgarh",
+    "url": "http://chhattisgarhtourism.cg.gov.in",
+    "status": "not_working",
+    "error": "ECONNABORTED"
+  },
+  {
+    "state": "dadra_nagar_haveli_daman_diu",
+    "url": "https://www.tourismdddnh.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "goa",
+    "url": "https://goa-tourism.com/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "gujarat",
+    "url": "https://www.gujarattourism.com/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "haryana",
+    "url": "http://haryanatourism.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "himachal_pradesh",
+    "url": "https://himachaltourism.gov.in/",
+    "status": "not_working",
+    "error": "UNABLE_TO_VERIFY_LEAF_SIGNATURE"
+  },
+  {
+    "state": "jammu_kashmir",
+    "url": "http://jammutourism.gov.in/",
+    "status": "not_working",
+    "error": "ECONNABORTED"
+  },
+  {
+    "state": "ladakh",
+    "url": "https://www.ladakh-tourism.net/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "jharkhand",
+    "url": "https://tourism.jharkhand.gov.in/",
+    "status": "not_working",
+    "error": "UNABLE_TO_VERIFY_LEAF_SIGNATURE"
+  },
+  {
+    "state": "karnataka",
+    "url": "https://www.karnatakatourism.org/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "kerala",
+    "url": "http://www.keralatourism.org",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "lakshadweep",
+    "url": "https://www.lakshadweeptourism.com/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "madhya_pradesh",
+    "url": "http://www.mptourism.com",
+    "status": "not_working",
+    "error": "ECONNABORTED"
+  },
+  {
+    "state": "maharashtra",
+    "url": "http://www.maharashtratourism.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "manipur",
+    "url": "http://www.manipurtourism.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "meghalaya",
+    "url": "https://www.meghalayatourism.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "mizoram",
+    "url": "https://tourism.mizoram.gov.in",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "nagaland",
+    "url": "http://tourismnagaland.com/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "delhi",
+    "url": "http://www.delhitourism.gov.in",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "odisha",
+    "url": "http://www.odishatourism.gov.in",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "puducherry",
+    "url": "https://www.pondicherrytourism.org/",
+    "status": "not_working",
+    "error": "ENOTFOUND"
+  },
+  {
+    "state": "punjab",
+    "url": "https://punjabtourism.punjab.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "rajasthan",
+    "url": "http://www.tourism.rajasthan.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "sikkim",
+    "url": "https://www.sikkimtourism.gov.in/",
+    "status": "not_working",
+    "error": "ERR_TLS_CERT_ALTNAME_INVALID"
+  },
+  {
+    "state": "tamil_nadu",
+    "url": "https://www.tamilnadutourism.org/",
+    "status": "not_working",
+    "error": "ECONNABORTED"
+  },
+  {
+    "state": "telangana",
+    "url": "https://tourism.telangana.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "tripura",
+    "url": "http://tripuratourism.gov.in/",
+    "status": "not_working",
+    "error": "ECONNABORTED"
+  },
+  {
+    "state": "uttar_pradesh",
+    "url": "https://uptourism.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "uttarakhand",
+    "url": "https://uttarakhandtourism.gov.in/",
+    "status": "working",
+    "statusCode": 200
+  },
+  {
+    "state": "west_bengal",
+    "url": "https://www.wbtourism.gov.in/",
+    "status": "not_working",
+    "error": "EPROTO"
+  }
+]

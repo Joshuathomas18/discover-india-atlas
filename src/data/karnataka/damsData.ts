@@ -1,5 +1,5 @@
 // Karnataka Dams Data
-// Comprehensive data for major dams in Karnataka with 4 tabs each
+// Comprehensive data for major dams in Karnataka with 3 tabs each
 
 import { KarnatakaPOI, DamTabs, ImageReference } from '../../types/database';
 
@@ -20,7 +20,6 @@ export const krsDamData: KarnatakaPOI = {
   icon_type: 'dam',
   created_at: new Date(),
   tabs: {
-    size: 'Krishna Raja Sagara Dam (KRS Dam) is a major dam built across the Kaveri River. The dam has a height of 39.8 meters (130 feet) and a length of 2,621 meters (8,600 feet). The reservoir has a capacity of 49.45 million cubic meters (MCM) and covers an area of about 130 sq km. The dam was built between 1911 and 1932 and is named after Krishnaraja Wodeyar IV, the Maharaja of Mysore.',
     rivers_associated: [
       'Kaveri River - Primary river',
       'Hemavati River - Tributary',
@@ -48,7 +47,6 @@ export const tungabhadraDamData: KarnatakaPOI = {
   icon_type: 'dam',
   created_at: new Date(),
   tabs: {
-    size: 'Tungabhadra Dam is a major dam built across the Tungabhadra River. The dam has a height of 49.5 meters (162 feet) and a length of 2,441 meters (8,000 feet). The reservoir has a capacity of 135.5 million cubic meters (MCM) and covers an area of about 378 sq km. The dam was built between 1945 and 1953 and is one of the largest irrigation projects in Karnataka.',
     rivers_associated: [
       'Tungabhadra River - Primary river',
       'Krishna River - Downstream',

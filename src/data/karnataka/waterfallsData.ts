@@ -1,5 +1,5 @@
 // Karnataka Waterfalls Data
-// Comprehensive data for major waterfalls in Karnataka with 4 tabs each
+// Comprehensive data for major waterfalls in Karnataka with 3 tabs each
 
 import { KarnatakaPOI, WaterfallTabs, ImageReference } from '../../types/database';
 
@@ -20,7 +20,6 @@ export const jogFallsData: KarnatakaPOI = {
   icon_type: 'waterfall',
   created_at: new Date(),
   tabs: {
-    size: 'Jog Falls is the second highest plunge waterfall in India, with a total height of 253 meters (830 feet). The waterfall is formed by the Sharavathi River and consists of four distinct streams: Raja, Rani, Roarer, and Rocket. During monsoon season, the waterfall is at its most spectacular with massive volumes of water cascading down the rocky cliffs. The falls are located in the Shimoga district of Karnataka.',
     rivers_associated: [
       'Sharavathi River - Primary source',
       'Linganamakki Dam - Upstream reservoir',
@@ -48,7 +47,6 @@ export const abbeyFallsData: KarnatakaPOI = {
   icon_type: 'waterfall',
   created_at: new Date(),
   tabs: {
-    size: 'Abbey Falls is a beautiful waterfall located in Coorg (Kodagu) district of Karnataka. The waterfall has a height of about 70 meters (230 feet) and is formed by the Kaveri River. The falls are surrounded by lush green coffee plantations and dense forests, creating a picturesque setting. The waterfall is accessible through a short walk from the parking area.',
     rivers_associated: [
       'Kaveri River - Primary source',
       'Local streams and tributaries'

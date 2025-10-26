@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { STATES_WITH_DATA, getStateConfig } from '@/config/statesConfig';
 import { mapDataService } from '@/services/mapDataService';
 import { Place, GeographicalPOI, KarnatakaPOI } from '@/types/database';
@@ -12,6 +12,10 @@ interface IndiaMapProps {
   onBackToMap?: () => void;
   mapPhase: 'initial' | 'stateZoomed' | 'poiSelected';
   selectedState: string | null;
+}
+
+export interface IndiaMapRef {
+  getMap: () => google.maps.Map | null;
 }
 
 const rusticMapStyle = [
@@ -56,7 +60,7 @@ const rusticMapStyle = [
   }
 ];
 
-const IndiaMap = ({ onStateClick, onPlaceClick, onPOIClick, onBackToMap, mapPhase, selectedState }: IndiaMapProps) => {
+const IndiaMap = forwardRef<IndiaMapRef, IndiaMapProps>(({ onStateClick, onPlaceClick, onPOIClick, onBackToMap, mapPhase, selectedState }, ref) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const statePolygonsRef = useRef<google.maps.Data.Feature[]>([]);
@@ -64,6 +68,11 @@ const IndiaMap = ({ onStateClick, onPlaceClick, onPOIClick, onBackToMap, mapPhas
   const poiMarkersRef = useRef<google.maps.Marker[]>([]);
   const [places, setPlaces] = useState<Place[]>([]);
   const [pois, setPOIs] = useState<GeographicalPOI[]>([]);
+
+  // Expose map reference to parent component
+  useImperativeHandle(ref, () => ({
+    getMap: () => mapRef.current
+  }));
 
   // Initialize map and load GeoJSON polygons
   useEffect(() => {
@@ -183,42 +192,16 @@ const IndiaMap = ({ onStateClick, onPlaceClick, onPOIClick, onBackToMap, mapPhas
     try {
       console.log(`Loading POIs for state: ${stateId}`);
       
-      // For Karnataka, use the new Karnataka POI dataset
-      if (stateId === 'karnataka') {
-        const karnatakaPOIs = await mapDataService.getKarnatakaPOIs();
-        console.log(`Found ${karnatakaPOIs.length} Karnataka POIs`);
-        
-        // Convert KarnatakaPOI to GeographicalPOI for compatibility
-        const convertedPOIs: GeographicalPOI[] = karnatakaPOIs.map(poi => ({
-          id: poi.id,
-          state_id: 'karnataka',
-          name: poi.name,
-          category: poi.category === 'place' ? 'city' : poi.category as any,
-          description: poi.description,
-          coordinates: poi.coordinates,
-          icon_color: getKarnatakaPOIColor(poi.category),
-          created_at: poi.created_at
-        }));
-        
-        setPOIs(convertedPOIs);
-        createPOIMarkers(convertedPOIs);
+      // Use the universal POI loading method
+      const statePOIs = await mapDataService.getAllPOIsForState(stateId);
+      console.log(`Found ${statePOIs.length} POIs for ${stateId}`);
+      
+      if (statePOIs.length > 0) {
+        setPOIs(statePOIs);
+        createPOIMarkers(statePOIs);
       } else {
-        // For other states, try to fetch from database
-        try {
-          const poisData = await databaseService.getGeographicalPOIsByState(stateId);
-          console.log(`Found ${poisData.length} POIs for ${stateId} from database`);
-          if (poisData.length > 0) {
-            setPOIs(poisData);
-            createPOIMarkers(poisData);
-          } else {
-            console.log(`No POIs found for ${stateId}, showing message`);
-            // Show a message that this state doesn't have POI data yet
-            setPOIs([]);
-          }
-        } catch (dbError) {
-          console.log(`Database error for ${stateId}, showing message`);
-          setPOIs([]);
-        }
+        console.log(`No POIs found for ${stateId}`);
+        setPOIs([]);
       }
     } catch (error) {
       console.error('Error loading POIs:', error);
@@ -407,6 +390,8 @@ const IndiaMap = ({ onStateClick, onPlaceClick, onPOIClick, onBackToMap, mapPhas
       )}
     </div>
   );
-};
+});
+
+IndiaMap.displayName = 'IndiaMap';
 
 export default IndiaMap;

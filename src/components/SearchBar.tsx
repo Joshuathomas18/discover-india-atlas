@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, MapPin, Loader2 } from 'lucide-react';
+import { Search, X, MapPin, Loader2, Globe, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { mapDataService } from '@/services/mapDataService';
-import { GeographicalPOI, Place } from '@/types/database';
+import { meilisearchService, MeilisearchDocument } from '@/services/meilisearchService';
+import { geminiIntegrationService } from '@/services/geminiIntegrationService';
+import { GeminiPlaceData } from '@/services/geminiService';
+import { TextShimmer } from './ui/text-shimmer';
 
 interface SearchResult {
   id: string;
@@ -12,19 +14,23 @@ interface SearchResult {
   coordinates: { lat: number; lng: number };
   description?: string;
   category?: string;
+  meilisearchDoc?: MeilisearchDocument;
 }
 
 interface SearchBarProps {
   onLocationSelect: (result: SearchResult) => void;
+  onGeminiResult: (result: GeminiPlaceData) => void;
   mapPhase: 'initial' | 'stateZoomed' | 'poiSelected';
 }
 
-const SearchBar = ({ onLocationSelect, mapPhase }: SearchBarProps) => {
+const SearchBar = ({ onLocationSelect, onGeminiResult, mapPhase }: SearchBarProps) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGeminiProcessing, setIsGeminiProcessing] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [showGeminiOption, setShowGeminiOption] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -41,18 +47,77 @@ const SearchBar = ({ onLocationSelect, mapPhase }: SearchBarProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Search function
+  // Search function using Meilisearch
   const searchLocations = async (searchQuery: string) => {
     if (searchQuery.length < 2) {
       setResults([]);
+      setIsOpen(false);
       return;
     }
 
     setIsLoading(true);
+    setIsOpen(true); // Open dropdown when starting search
     try {
       const searchResults: SearchResult[] = [];
 
-      // Search in states
+      // Search using Meilisearch
+      const meilisearchResults = await meilisearchService.search(searchQuery, {
+        limit: 10,
+        attributesToRetrieve: ['id', 'name', 'type', 'state', 'city', 'coordinates', 'description_short', 'category', 'state_id']
+      });
+
+      // Transform Meilisearch results to SearchResult format
+      meilisearchResults.hits.forEach((doc) => {
+        if (doc.name && doc.state) { // Only add results with valid names and states
+          searchResults.push({
+            id: doc.id,
+            name: doc.name,
+            type: doc.type === 'City' ? 'place' : 'poi',
+            state: doc.state,
+            coordinates: doc.coordinates,
+            description: doc.description_short,
+            category: doc.category,
+            meilisearchDoc: doc
+          });
+        }
+      });
+
+      // Add state-level results for broader searches
+      const stateResults = await meilisearchService.searchWithFilters(searchQuery, {});
+      const uniqueStates = new Set<string>();
+      
+      stateResults.forEach(result => {
+        if (result.state && !uniqueStates.has(result.state)) {
+          uniqueStates.add(result.state);
+          searchResults.push({
+            id: `state_${result.state_id}`,
+            name: result.state,
+            type: 'state',
+            state: result.state,
+            coordinates: result.coordinates, // Use first POI's coordinates as state center
+            description: `Explore ${result.state}'s geographical treasures`
+          });
+        }
+      });
+
+      const finalResults = searchResults.slice(0, 10); // Limit to 10 results
+      setResults(finalResults);
+      
+      // Show Gemini option when there are few results or no exact matches
+      const exactMatch = finalResults.some(result => 
+        result.name && result.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      
+      const shouldShowGemini = finalResults.length === 0 || 
+        !exactMatch || 
+        finalResults.length < 3;
+      
+      setShowGeminiOption(shouldShowGemini && searchQuery.length >= 2);
+      
+    } catch (error) {
+      console.error('Search error:', error);
+      setShowGeminiOption(true); // Show Gemini option on error
+      // Fallback to basic state search if Meilisearch fails
       const states = [
         { id: 'karnataka', name: 'Karnataka', center: { lat: 15.3173, lng: 75.7139 } },
         { id: 'kerala', name: 'Kerala', center: { lat: 10.8505, lng: 76.2711 } },
@@ -64,76 +129,20 @@ const SearchBar = ({ onLocationSelect, mapPhase }: SearchBarProps) => {
         { id: 'rajasthan', name: 'Rajasthan', center: { lat: 27.0238, lng: 74.2179 } }
       ];
 
-      // Filter states by search query
       const matchingStates = states.filter(state => 
         state.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
 
-      matchingStates.forEach(state => {
-        searchResults.push({
+      const fallbackResults = matchingStates.map(state => ({
           id: state.id,
           name: state.name,
-          type: 'state',
+        type: 'state' as const,
           state: state.name,
           coordinates: state.center,
           description: `Explore ${state.name}'s geographical treasures`
-        });
-      });
+      }));
 
-      // Search in Karnataka POIs if available
-      try {
-        const karnatakaPOIs = await mapDataService.getKarnatakaPOIs();
-        const matchingPOIs = karnatakaPOIs.filter(poi => 
-          poi.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          poi.description.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-
-        matchingPOIs.forEach(poi => {
-          searchResults.push({
-            id: poi.id,
-            name: poi.name,
-            type: 'poi',
-            state: 'Karnataka',
-            coordinates: poi.coordinates,
-            description: poi.description,
-            category: poi.category
-          });
-        });
-      } catch (error) {
-        console.log('Karnataka POIs not available for search');
-      }
-
-      // Search in other states POIs
-      const otherStates = ['kerala', 'goa', 'tamil-nadu', 'maharashtra', 'uttarakhand', 'himachal-pradesh', 'rajasthan'];
-      
-      for (const stateId of otherStates) {
-        try {
-          const pois = await mapDataService.getGeographicalPOIsByState(stateId);
-          const matchingPOIs = pois.filter(poi => 
-            poi.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            poi.description.toLowerCase().includes(searchQuery.toLowerCase())
-          );
-
-          matchingPOIs.forEach(poi => {
-            searchResults.push({
-              id: poi.id,
-              name: poi.name,
-              type: 'poi',
-              state: stateId.charAt(0).toUpperCase() + stateId.slice(1).replace('-', ' '),
-              coordinates: poi.coordinates,
-              description: poi.description,
-              category: poi.category
-            });
-          });
-        } catch (error) {
-          // State not available, continue
-        }
-      }
-
-      setResults(searchResults.slice(0, 10)); // Limit to 10 results
-    } catch (error) {
-      console.error('Search error:', error);
-      setResults([]);
+      setResults(fallbackResults);
     } finally {
       setIsLoading(false);
     }
@@ -199,7 +208,38 @@ const SearchBar = ({ onLocationSelect, mapPhase }: SearchBarProps) => {
     setIsOpen(false);
     setSelectedIndex(-1);
     setResults([]);
+    setShowGeminiOption(false);
     inputRef.current?.focus();
+  };
+
+  // Handle Gemini search
+  const handleGeminiSearch = async () => {
+    if (!query.trim()) return;
+    
+    setIsGeminiProcessing(true);
+    setShowGeminiOption(false);
+    
+    try {
+      console.log('🤖 Starting Gemini search for:', query);
+      
+      // Process complete Gemini flow
+      const result = await geminiIntegrationService.processGeminiQuery(query);
+      
+      // Pass result to parent
+      onGeminiResult(result.geminiData);
+      
+      // Clear search
+      setQuery('');
+      setIsOpen(false);
+      
+      console.log('✅ Gemini search completed for:', query);
+      
+    } catch (error) {
+      console.error('❌ Gemini search error:', error);
+      // Show error message or fallback
+    } finally {
+      setIsGeminiProcessing(false);
+    }
   };
 
   return (
@@ -236,7 +276,75 @@ const SearchBar = ({ onLocationSelect, mapPhase }: SearchBarProps) => {
 
       {/* Search Results Dropdown */}
       <AnimatePresence>
-        {isOpen && results.length > 0 && (
+        {/* Loading shimmer effect */}
+        {isOpen && isLoading && results.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md border border-primary/20 rounded-xl shadow-xl z-50 p-4"
+          >
+            <div className="flex items-center justify-center gap-3">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              <TextShimmer 
+                className="text-lg font-medium text-primary"
+                duration={1.5}
+                spread={3}
+              >
+                Generating results...
+              </TextShimmer>
+            </div>
+          </motion.div>
+        )}
+        
+        {/* No Results + Gemini Option */}
+        {isOpen && !isLoading && results.length === 0 && query.length >= 2 && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md border border-primary/20 rounded-xl shadow-xl z-50"
+          >
+            <div className="px-4 py-6 text-center">
+              <div className="text-gray-400 text-4xl mb-3">🔍</div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Try searching with AI for "{query}"
+              </p>
+              
+              {/* Gemini AI Option */}
+              <button
+                onClick={handleGeminiSearch}
+                disabled={isGeminiProcessing}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+              >
+                {isGeminiProcessing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <TextShimmer 
+                      className="text-sm font-medium"
+                      duration={1.2}
+                      spread={2}
+                    >
+                      AI analyzing...
+                    </TextShimmer>
+                  </>
+                ) : (
+                  <>
+                    <Globe className="h-4 w-4" />
+                    <Plus className="h-3 w-3" />
+                    AI Search for "{query}"
+                  </>
+                )}
+              </button>
+            </div>
+          </motion.div>
+        )}
+        
+        {/* Results with Gemini Option */}
+        {isOpen && !isLoading && results.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -248,7 +356,7 @@ const SearchBar = ({ onLocationSelect, mapPhase }: SearchBarProps) => {
               <motion.div
                 key={`${result.type}-${result.id}`}
                 whileHover={{ backgroundColor: 'rgba(251, 146, 60, 0.1)' }}
-                className={`px-4 py-3 cursor-pointer border-b border-gray-100 last:border-b-0 ${
+                className={`px-4 py-3 cursor-pointer border-b border-gray-100 ${
                   index === selectedIndex ? 'bg-primary/10' : ''
                 }`}
                 onClick={() => handleResultClick(result)}
@@ -284,29 +392,45 @@ const SearchBar = ({ onLocationSelect, mapPhase }: SearchBarProps) => {
                 </div>
               </motion.div>
             ))}
+            
+            {/* Gemini AI Option at bottom of results */}
+            {showGeminiOption && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="px-4 py-3 border-t border-gray-200 bg-gray-50/50"
+              >
+                <button
+                  onClick={handleGeminiSearch}
+                  disabled={isGeminiProcessing}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isGeminiProcessing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <TextShimmer 
+                        className="text-sm font-medium"
+                        duration={1.2}
+                        spread={2}
+                      >
+                        AI analyzing...
+                      </TextShimmer>
+                    </>
+                  ) : (
+                    <>
+                      <Globe className="h-4 w-4" />
+                      <Plus className="h-3 w-3" />
+                      AI Search for "{query}"
+                    </>
+                  )}
+                </button>
+              </motion.div>
+            )}
+            
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* No Results */}
-      <AnimatePresence>
-        {isOpen && !isLoading && results.length === 0 && query.length >= 2 && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md border border-primary/20 rounded-xl shadow-xl z-50 p-4"
-          >
-            <div className="text-center text-gray-500">
-              <Search className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-              <p className="text-sm">No locations found for "{query}"</p>
-              <p className="text-xs text-gray-400 mt-1">
-                Try searching for states, cities, or geographical features
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

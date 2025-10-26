@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "./ui/card";
 import { CulturalItem } from "@/types/database";
+import { formatTabName } from "@/utils/formatTabName";
 
 interface InfoCardProps {
   category: {
@@ -23,19 +24,31 @@ const InfoCard = ({ category, index, onClick }: InfoCardProps) => {
   // with better fallback logic
   const getCategoryImage = (categoryKey: string) => {
     const imageMap: Record<string, string> = {
+      // Cities tabs
       monuments: '/src/assets/monuments.jpg',
       food: '/src/assets/food.jpg', 
       customs: '/src/assets/customs.jpg',
       festivals: '/src/assets/festivals.jpg',
-      history: '/src/assets/history.jpg'
+      history: '/src/assets/history.jpg',
+      
+      // Waterfalls, Dams, Mountains, Rivers, Forests, Wildlife tabs
+      facts: '/src/assets/facts.jpg',
+      facts_tourists: '/src/assets/facts.jpg',
+      how_to_reach: '/src/assets/how_to_reach.jpg',
+      rivers_associated: '/src/assets/rivers_associated.jpg',
+      trekking: '/src/assets/trekking.jpg',
+      visiting: '/src/assets/visiting.jpg',
+      fishes_found: '/src/assets/fishes_found.jpg',
+      animals_found: '/src/assets/animals_found.jpg',
+      tourists: '/src/assets/facts.jpg' // Use facts image for tourists tab
     };
     return imageMap[categoryKey] || '/src/assets/monuments.jpg';
   };
 
   const categoryImage = getCategoryImage(category.key);
 
-  // Get category display name
-  const categoryName = category.name || category.key.charAt(0).toUpperCase() + category.key.slice(1);
+  // Get category display name - use formatTabName to convert underscores to readable format
+  const categoryName = category.name || formatTabName(category.key);
   
   // Get category description from first item
   const categoryDescription = category.items[0]?.description || `Explore ${categoryName.toLowerCase()} in this place`;
@@ -75,6 +88,7 @@ const InfoCard = ({ category, index, onClick }: InfoCardProps) => {
           <div className="text-xs text-accent mt-1">
             {category.items.length} item{category.items.length !== 1 ? 's' : ''}
           </div>
+          
         </CardContent>
       </Card>
     </motion.div>
