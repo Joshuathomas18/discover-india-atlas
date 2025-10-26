@@ -70,7 +70,7 @@ const StreetViewModal: React.FC<StreetViewModalProps> = ({ monument, isOpen, onC
 
     console.log('Initializing Street View for:', monument.name, 'at', monument.coordinates);
 
-    // Add delay to prevent rate limiting
+    // Add delay to prevent rate limiting - increased to 2 seconds
     const initDelay = setTimeout(() => {
       // First check if Street View is available at this location
       const streetViewService = new google.maps.StreetViewService();
@@ -79,29 +79,33 @@ const StreetViewModal: React.FC<StreetViewModalProps> = ({ monument, isOpen, onC
         radius: 50
       }, (data, status) => {
         if (status === google.maps.StreetViewStatus.OK && data) {
-          // Street View is available, initialize panorama with rate limiting
+          // Street View is available, initialize panorama with aggressive rate limiting
           const panorama = new google.maps.StreetViewPanorama(streetViewRef.current!, {
             position: monument.coordinates,
             pov: {
               heading: 0,
               pitch: 0
             },
-            zoom: 1,
+            zoom: 0, // Minimum zoom to reduce tiles
             visible: true,
+            // Disable all controls to reduce API calls
             addressControl: false,
-            linksControl: true,
-            panControl: true,
+            linksControl: false, // Disabled to reduce API calls
+            panControl: false,
             enableCloseButton: false,
             showRoadLabels: false,
             zoomControl: true,
             zoomControlOptions: {
               position: google.maps.ControlPosition.RIGHT_TOP
             },
-            // Add rate limiting options
+            // Aggressive rate limiting options
             motionTracking: false,
             motionTrackingControl: false,
-            // Reduce image quality to prevent rate limiting
-            imageDateControl: false
+            imageDateControl: false,
+            clickToGo: false, // Disable clicking to navigate
+            scrollwheel: false, // Disable scroll wheel
+            disableDefaultUI: true, // Disable default UI
+            disableDoubleClickZoom: true // Disable double click zoom
           });
 
           // Add event listeners to handle rate limiting
@@ -136,7 +140,7 @@ const StreetViewModal: React.FC<StreetViewModalProps> = ({ monument, isOpen, onC
           setError('Street View imagery not available for this location');
         }
       });
-    }, 1000); // 1 second delay to prevent rate limiting
+    }, 2000); // 2 seconds delay to prevent rate limiting
 
     // Cleanup
     return () => {
